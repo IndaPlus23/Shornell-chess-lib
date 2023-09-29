@@ -1,3 +1,4 @@
 # Shornell-chess
 
-1.
+1. Den enda buggen jag känner till är att det kraschar om du försöker flytta en pjäs från en tom plats! Men det finns säker mer hehe,
+2. Såhär använder du programmet! Gå ner till Mod Tests, på ungefär rad 1000. Använd game.make_move(_from, _to) för att flytta en pjäs på en ruta till en annan ruta. game.print_game() printar brädet. Funktionen är ganska trash, för den ritar även ut out of bounds rutor utanför planen. Den ritar heller inte ut namnet på kolumner och rader. Bonde motsvaras av en 5:a, torn av en 4:a, häst av en 3:a, löpare av en 2:a, drottning av en 1:a och kungen av en 0:a. så det är ganska trash.

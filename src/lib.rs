@@ -425,10 +425,12 @@ impl Game {
     /// new positions of that piece. Don't forget to the rules for check. 
     /// 
     /// (optional) Implement en passant and castling.
+    /// 
+    /// /* Här har vi funktionen som kollar en pjäs olika möjliga utfall. Det räknas lite olika för olika pjäser, men det fungerar
+    /// så att funktionen tar en pjäs på en plats som matas in i _position-variabeln. Funktionen kollar sedan om den är en pjäs i vägen. Om den
+    /// har samma färg som nämnd pjäs läggs rutan inte till som en möjlig ruta i possible_moves_vec. Om den är av en annan färg så läggs den till. 
+    /// Det kollas även om den hamnar out of bounds. Notera */
     pub fn get_possible_moves(&self, _position: &str) -> Option<Vec<String>> {
-
-   
-
 
         let mut possible_moves_vec: Vec<String> = Vec::new();
 
@@ -578,11 +580,6 @@ impl Game {
             if  self.check_if_overflow(position + (2 - 12)) == false || self.check_if_occupied_by_bro(position, position + (2 - 12)) == false {
                 possible_moves_vec.push(convert_to_coordinates(position + (2-12)));
             }
-
-
-            
-
-            
             
         }
 
@@ -1005,6 +1002,8 @@ impl Game {
 
     }
 
+    /* Den här funktionen printar ut Schackbrädet! Sorry att den är så scuffed. Notera bonde=5, torne=4, häst=3
+    löpare=2, drottning=1 och kung = 0 */
     pub fn print_game(&self) {
         let mut flag = 0;
         for square in self.board.iter() {
@@ -1085,7 +1084,9 @@ mod tests {
 
     }
 
-
+/* Här gör du drag med Game.make_move(_from, _to)! Där _from är rutan med en pjäs du vill flytta och _to är rutan du vill flytta den till
+. Du kommer inte kunna flytta en pjäs till en icke-legal plats, för den kollar så att du bara kan flytta rätt. Försöker du flytta
+fel så händer inget och du får ett felmeddelande. Försök bara inte flytta något från en tom plats, för då kraschar programmet höhö.  */
     #[test]
     fn move_pieces () {
 
@@ -1107,16 +1108,6 @@ mod tests {
         game.print_game();
 
  
-       
-
-
-
-        
-
-
-
-  
-
 
 
     }
