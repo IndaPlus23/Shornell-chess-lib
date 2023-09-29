@@ -14,21 +14,15 @@ pub enum GameState {
  * - Read the Rust documentation, ask questions if you get stuck!
  */
 
-/* 
-enum Piece_role {
-    King = 0, Queen = 1, Bishop = 2, Knight = 3, Rook = 4, Pawn = 5
-}
-
-enum Colour {
-    White = 0,
-    Black = 1
-}
-*/
+/*Godmiddag! Otur för dig att  du får jobba med min kod, för den är trash. Hursomhelst! Det här schack-biblioteket 
+representerar schackbräde som en vecktor av Option-Structen Pieces. Här definieras structen Piece, vilket då ska representera 
+en Schackpjäs på bräder*/
 #[derive(Debug, Clone, Copy)]
 pub struct Piece {
     colour: u8,
     role: u8
 } 
+
 
 impl Piece {
     fn description (&self) {
@@ -41,7 +35,7 @@ impl Piece {
     }
 
 }
-
+/* Färger representeras som en 1 eller 0, vit=0 ocg svart=1.  */
 #[derive(Clone)]
 pub struct Game {
     /* save board, active colour, ... */
@@ -52,24 +46,20 @@ pub struct Game {
 
 }
 
+/* Funktion som initierar en ny Piece_strukt */
+
 pub fn new_piece(colour: u8, role: u8) -> Piece {
     Piece {colour: colour, role: role}
 }
 
 
 
-
+/*Den här funktionen konverterar kordinater (a1, b5, g8 o.s.v.) till det faktiska elementet den motsvarar (en siffra. 26, 50, 110 o.s.v)
+ */
 pub fn convert_to_int( _position: String) -> i16 {
-
-  
-   
-
 
     let mut position_vec: Vec<char> = Vec::new();
     position_vec = _position.chars().collect();
-
-  
-
 
     let mut column: i16;
     let mut row: i16;
@@ -134,24 +124,16 @@ pub fn convert_to_int( _position: String) -> i16 {
         row = 0;
     }
 
-  
-
-
     return column + (row * 12);
 
 }
 
+/*Den här funktionen gör tvärt om! Den tar in en kordinat som en int (26, 117), och ploppar ut en schackkordinat */
 pub fn convert_to_coordinates(_position: i16) -> String {
-
-
-
-
 
     let mut row: i16;
     let temp_row: i16;
     let column: i16;
-
-   
     
     if _position >= 26 && _position <= 33  {
         row = 8;
@@ -190,11 +172,7 @@ pub fn convert_to_coordinates(_position: i16) -> String {
         temp_row = 0;
     }
 
-
-
-
     column = _position - (temp_row * 12);
-
 
     let mut coordinates = String::new();
     
@@ -228,8 +206,6 @@ pub fn convert_to_coordinates(_position: i16) -> String {
 
     coordinates = coordinates + &row.to_string();
 
-    
-
     return coordinates;
 
 }
@@ -262,6 +238,8 @@ impl Game {
         }
     }
 
+    /*Här är funktionen som kollar så att ingen Piece vill lägga en ruta som är out of bounds på sin list över
+    möjliga moves */
     pub fn check_if_overflow(&self, _position: i16) -> bool {
 
         if _position >= 0 && _position <= 25 ||
@@ -280,14 +258,11 @@ impl Game {
          }
      }
 
+/* Den här funktionen kollar ifall en pjäs försöker flytta sig till pjäs som en motståndare står på */
      pub fn check_if_occupied_by_opp(&self,_from: i16, _to: i16) -> bool {
-
-      
 
         let square = self.board[_to as usize];
 
-        
-        
         match square {
             None => return false,
             Some(piece) => return self.board[_from as usize].unwrap().colour != piece.colour,
@@ -295,13 +270,10 @@ impl Game {
         }
      }
 
+/* Den här funktionen kollar ifall en pjäs försöker flytta sig till pjäs som en lagmedlem står på */
      pub fn check_if_occupied_by_bro(&self,_from: i16, _to: i16) -> bool {
         
-   
         let square = self.board[_to as usize];
-
-       
-
 
         match square {
             None => return false,
@@ -309,31 +281,21 @@ impl Game {
         }
      }
 
+/* Den här funktionen kollar ifall kungen är i schack på en rute */
      pub fn check_if_king_in_check(&self, _from: i16, _to: i16) -> bool{
 
-println!("check if king in check ");
-
         let mut possible_moves_vec: Vec<String> = Vec::new();
-
         let king_colour = self.board[_from as usize].unwrap().colour;
 
-
         for i in 0..143 {
-
-            println!("i: {}", i);
-            println!("_from: {}", _from);
-            
+ 
             let square = self.board[i as usize];
 
-        match square {
-            None => print!(""),
-            Some(piece) => if king_colour != piece.colour && piece.role != 0 {
-
-                possible_moves_vec.append(&mut self.get_possible_moves(convert_to_coordinates(i).as_ref()).unwrap());
-              
-
-                
-            },  
+            match square {
+                None => print!(""),
+                Some(piece) => if king_colour != piece.colour && piece.role != 0 {
+                    possible_moves_vec.append(&mut self.get_possible_moves(convert_to_coordinates(i).as_ref()).unwrap());
+                },  
         }
 
         }
@@ -348,15 +310,11 @@ println!("check if king in check ");
 
      }
 
-
+/* Den här funktionen kollar ifall en pjäs försöker schackar kunger */
      pub fn check_if_checking_king(&self, _from: i16) -> bool{
 
-        println!("check if checking in king ");
         let mut possible_moves_vec: Vec<String> = self.get_possible_moves(convert_to_coordinates(_from).as_ref()).unwrap();
         let _from_piece_colour = self.board[_from as usize].unwrap().colour;
-
-        
-
 
         for i in 0..143 {
             
@@ -375,9 +333,10 @@ println!("check if king in check ");
         }
         return false;
 
-
      }
 
+
+     /* Den här funktionen kollar ifall kungen inte kan röra sig */
      pub fn check_if_king_no_moves (&self, _to: i16) -> bool {
 
         println!("check_if_king_no_moves börjar");
@@ -386,16 +345,11 @@ println!("check if king in check ");
 
         for i in 0..143 {
             
-            println!("");
-            println!("{}", i);
-            println!("");
-            
             let square = self.board[i as usize];
 
             match square {
                 None => print!(""),
                 Some(piece) => if _to_piece_colour != piece.colour && piece.role == 0 {
-                    println!("vi har gått igenom Some");
                         return self.get_possible_moves( convert_to_coordinates(i).as_ref()).unwrap().is_empty();
                     },
                 }  
@@ -405,49 +359,13 @@ println!("check if king in check ");
 
      }
 
-     pub fn check_if_king_checkmate (&self, _to: i16) {
-
-        println!("check_if_king_no_moves börjar");
-
-        let _to_piece_colour = self.board[_to as usize].unwrap().colour;
-
-        let mut possible_moves_vec: Vec<String> = Vec::new();
-
-        for i in 0..143 {
-            
-            println!("");
-            println!("{}", i);
-            println!("");
-            
-            let square = self.board[i as usize];
-
-            match square {
-                None => print!(""),
-                Some(piece) => if piece.role != 0  {
-                    
-                    possible_moves_vec.append(&mut self.get_possible_moves( convert_to_coordinates(i).as_ref()).unwrap());
-                    
-                }  
-            }
-        
-            
-
-            }
-
-     }
      
-
     /// If the current game state is `InProgress` and the move is legal, 
     /// move a piece and return the resulting state of the game.
     pub fn make_move(&mut self, _from: &str, _to: &str) -> Option<GameState> {
     
         let from = _from;
         let to = _to;
-
-        println!("make move from: {}", from);
-        println!("make move to: {}", to);
-
-        //println!("{:?}", self.board[convert_to_int(from.to_string()) as usize]);
 
         let vector_of_possible_moves: Vec<String> = self.get_possible_moves(from).unwrap();
 
@@ -488,9 +406,7 @@ println!("check if king in check ");
             return Some(GameState::InProgress);
         }
  
-       
-       
-       
+    
        
         
     }
